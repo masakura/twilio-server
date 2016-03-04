@@ -6,7 +6,12 @@ var TwilioServer = require('./index');
 var config = JSON.stringify(fs.readFileSync('./config.json', 'utf-8'));
 
 var twilioResponse = new twilio.TwimlResponse();
-twilioResponse.say('Hello!');
+twilioResponse.say('Welcome!');
+twilioResponse.gather({
+  finishOnKey: '*'
+}, function() {
+  this.say('Press 1');
+});
 console.log(twilioResponse.toString());
 
 var server = new TwilioServer(config.twilio);
