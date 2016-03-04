@@ -10,5 +10,9 @@ twilioResponse.say('Hello!');
 console.log(twilioResponse.toString());
 
 var server = new TwilioServer(config.twilio);
-server.start()
-  .then(server.twiml(twilioResponse.toString()));
+server.start();
+
+server.receive(function (promise) {
+  return promise
+    .then(server.twiml(twilioResponse.toString()));
+});

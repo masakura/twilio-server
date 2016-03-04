@@ -18,14 +18,22 @@ TwilioServer.prototype.start = function() {
   var app = express();
   app.use(bodyParser());
 
+  var that = this;
   var defers = this.defers_;
   var options = this.options_;
+  var receiveCallback = this.receiveCallback_;
 
   app.post(this.options_.path, (function(request, response) {
     console.log(request.body.From);
     var sid = request.body.CallSid;
 
     var defer = defers[sid];
+
+    if (receiveCallback) {
+      receiveCallback(Promise.resolve(body));
+      defer = defers[sid];
+    }
+
     if (defer) {
       defer.resolve(request.body);
 
@@ -40,7 +48,6 @@ TwilioServer.prototype.start = function() {
     }
   }));
 
-  var that = this;
   return new Promise(function(resolve) {
     app.listen(options.port, function() {
       resolve(that);
@@ -66,6 +73,10 @@ TwilioServer.prototype.twiml = function(twiml) {
 
     return that.promise(sid, function () { return twiml; });
   }
+};
+
+TwilioServer.prototype.receive = function(callback) {
+  this.receiveCallback = callback;
 };
 
 module.exports = TwilioServer;
