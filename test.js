@@ -14,9 +14,14 @@ twilioResponse.gather({
 });
 console.log(twilioResponse.toString());
 
+var resp = new twilio.TwimlResponse();
+resp.say('Thanks');
+resp.hangup();
+
 var server = new TwilioServer(config.twilio);
 server.start();
 
 server.receive(function(body) {
-  return server.twiml(twilioResponse.toString())(body);
+  return server.twiml(twilioResponse.toString())(body)
+    .then(server.twiml(resp.toString()));
 });

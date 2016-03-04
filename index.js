@@ -37,7 +37,7 @@ TwilioServer.prototype.start = function() {
       defer.resolve(request.body);
 
       setImmediate(function () {
-        var make = defers[sid].makeTwiml;
+        var make = defer.makeTwiml;
         if (make) {
           response.send(make(request.body));
         } else {
