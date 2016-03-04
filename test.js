@@ -11,4 +11,4 @@ console.log(twilioResponse.toString());
 
 var server = new TwilioServer(config.twilio);
 server.start()
-  .then(server.twiml(twilioResponse.toSource()));
+  .then(server.twiml(twilioResponse.toString()));
