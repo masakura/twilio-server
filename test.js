@@ -16,7 +16,7 @@ server.receive(function(promise) {
       resp.say('こんにちわ!', {language:'ja-JP'});
       resp.gather({
         finishOnKey: '*',
-        {language:'ja-JP'}
+        language:'ja-JP'
       }, function() {
         this.say('1 を押してください。');
       });
