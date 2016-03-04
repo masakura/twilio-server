@@ -1,7 +1,7 @@
 'use strict';
 
 var express = require('express');
-var bodyParser = require('bodyParser');
+var bodyParser = require('body-parser');
 var _ = require('underscore');
 
 function TwilioServer(optOptions) {
@@ -22,6 +22,7 @@ TwilioServer.prototype.start = function() {
   var options = this.options_;
 
   app.post(this.options_.path, (function(request, response) {
+    console.log(request.baseUrl);
     var sid = request.body.CallSid;
 
     var defer = this.defers_[sid];
@@ -39,7 +40,13 @@ TwilioServer.prototype.start = function() {
     }
   }));
 
+  var that = this;
   return new Promise(function(resolve) {
-    app.listen(options_.port, resolve);
+    app.listen(options_.port, function() {
+      resolve(that);
+    });
   })
 };
+
+TwilioServer.prototype.receive = function() {
+}
