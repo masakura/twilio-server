@@ -18,19 +18,19 @@ TwilioServer.prototype.start = function() {
   var app = express();
   app.use(bodyParser());
 
-  var defers_ = this.defers_;
+  var defers = this.defers_;
   var options = this.options_;
 
   app.post(this.options_.path, (function(request, response) {
     console.log(request.baseUrl);
     var sid = request.body.CallSid;
 
-    var defer = this.defers_[sid];
+    var defer = defers[sid];
     if (defer) {
       defer.resolve(request.body);
 
       setImmediate(function () {
-        var make = defers_[sid].makeTwiml;
+        var make = defers[sid].makeTwiml;
         if (make) {
           response.send(make(request.body));
         } else {
@@ -42,7 +42,7 @@ TwilioServer.prototype.start = function() {
 
   var that = this;
   return new Promise(function(resolve) {
-    app.listen(options_.port, function() {
+    app.listen(options.port, function() {
       resolve(that);
     });
   })
