@@ -13,17 +13,18 @@ server.receive(function(promise) {
   return promise
     .then(server.twiml(function () {
       var resp = new twilio.TwimlResponse();
-      resp.say('Welcome!');
+      resp.say('こんにちわ!', {language:'ja-JP'});
       resp.gather({
-        finishOnKey: '*'
+        finishOnKey: '*',
+        {language:'ja-JP'}
       }, function() {
-        this.say('Press 1');
+        this.say('1 を押してください。');
       });
       return resp.toString();
     }))
     .then(server.twiml(function (result) {
       var resp = new twilio.TwimlResponse();
-      resp.say(result.Digits + ' Thanks!');
+      resp.say(result.Digits + ' ありがとう!', {language:'ja-JP'});
       resp.hangup();
       return resp.toString();
     }));
