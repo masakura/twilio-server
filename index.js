@@ -41,7 +41,14 @@ TwilioServer.prototype.start = function() {
 
           var make = defer.makeTwiml;
           if (make) {
-            response.send(make(request.body));
+            var body = make(request.body);
+            if (body.then) {
+              body = body.then(function (body) {
+                response.send(body);
+              })
+            } else {
+              response.send(body);
+            }
           } else {
             response.end();
           }
