@@ -5,29 +5,26 @@ var twilio = require('twilio');
 var TwilioServer = require('./index');
 var config = JSON.stringify(fs.readFileSync('./config.json', 'utf-8'));
 
-var twilioResponse = new twilio.TwimlResponse();
-twilioResponse.say('Welcome!');
-twilioResponse.gather({
-  finishOnKey: '*'
-}, function() {
-  this.say('Press 1');
-});
-console.log(twilioResponse.toString());
-
-var resp = new twilio.TwimlResponse();
-resp.say('Thanks');
-resp.hangup();
 
 var server = new TwilioServer(config.twilio);
 server.start();
 
-server.receive(function(body) {
-  return server.twiml(twilioResponse.toString())(body)
-    .then(function (body) {
+server.receive(function(promise) {
+  return promise
+    .then(server.twiml(function () {
       var resp = new twilio.TwimlResponse();
-      resp.say(body.Digits + ' Thanks');
+      resp.say('Welcome!');
+      resp.gather({
+        finishOnKey: '*'
+      }, function() {
+        this.say('Press 1');
+      });
+      return resp.toString();
+    }))
+    .then(server.twiml(function (result) {
+      var resp = new twilio.TwimlResponse();
+      resp.say(result.Digits + ' Thanks!');
       resp.hangup();
-
-      return server.twiml(resp.toString())(body);
-    });
+      return resp.toString();
+    }));
 });

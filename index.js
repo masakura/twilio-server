@@ -29,22 +29,24 @@ TwilioServer.prototype.start = function() {
     var defer = defers[sid];
 
     if (!defer && that.receiveCallback_) {
-      that.receiveCallback_(request.body);
-      defer = defers[sid];
-    }
-
-    if (defer) {
-      defer.resolve(request.body);
-
+      that.receiveCallback_(Promise.resolve(request.body));
       setImmediate(function () {
-        var make = defer.makeTwiml;
-        if (make) {
-          response.send(make(request.body));
-        } else {
-          response.end();
-        }
-      });
+        defer = defers[sid];
+      })
     }
+
+    setImmediate(function () {
+      if (defer) {
+        defer.resolve(request.body);
+
+          var make = defer.makeTwiml;
+          if (make) {
+            response.send(make(request.body));
+          } else {
+            response.end();
+          }
+      }
+    });
   }));
 
   return new Promise(function(resolve) {
@@ -70,7 +72,7 @@ TwilioServer.prototype.twiml = function(twiml) {
   return function(result) {
     var sid = result.CallSid || result.sid;
 
-    return that.promise(sid, function () { return twiml; });
+    return that.promise(sid, twiml);
   }
 };
 
