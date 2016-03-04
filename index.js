@@ -22,7 +22,7 @@ TwilioServer.prototype.start = function() {
   var options = this.options_;
 
   app.post(this.options_.path, (function(request, response) {
-    console.log(request.baseUrl);
+    console.log(request.body.From);
     var sid = request.body.CallSid;
 
     var defer = defers[sid];
@@ -48,7 +48,24 @@ TwilioServer.prototype.start = function() {
   })
 };
 
-TwilioServer.prototype.receive = function() {
-}
+TwilioServer.prototype.promise = function(sid, makeTwiml) {
+  var defer = this.defers_[sid] = {};
+
+  return new Promise(function(resolve, reject) {
+    defer.resolve = resolve;
+    defer.reject = reject;
+    defer.makeTwiml = makeTwiml;
+  });
+};
+
+TwilioServer.prototype.twiml = function(twiml) {
+  var that = this;
+
+  return function(result) {
+    var sid = result.CallSid || result.sid;
+
+    return that.promise(sid, function () { return twiml; });
+  }
+};
 
 module.exports = TwilioServer;
