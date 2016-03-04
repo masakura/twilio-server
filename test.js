@@ -23,5 +23,11 @@ server.start();
 
 server.receive(function(body) {
   return server.twiml(twilioResponse.toString())(body)
-    .then(server.twiml(resp.toString()));
+    .then(function (body) {
+      var resp = new twilio.TwimlResponse();
+      resp.say(body.Digits + ' Thanks');
+      resp.hangup();
+
+      return server.twiml(resp.toString())(body);
+    });
 });
