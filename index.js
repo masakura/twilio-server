@@ -50,3 +50,5 @@ TwilioServer.prototype.start = function() {
 
 TwilioServer.prototype.receive = function() {
 }
+
+module.exports = TwilioServer;
