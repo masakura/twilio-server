@@ -3,6 +3,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var twilio = require('twilio');
 
 function TwilioServer(optOptions) {
   this.options_ = _.extend({}, optOptions, {
@@ -85,5 +86,36 @@ TwilioServer.prototype.twiml = function(twiml) {
 TwilioServer.prototype.receive = function(callback) {
   this.receiveCallback_ = callback;
 };
+
+TwilioServer.prototype.dial = function(phoneNumber) {
+  var that = this;
+
+  return dial(this.options, phoneNumber)
+    .then(function(result) {
+      var sid = result.CallSid || result.sid;
+
+      return that.promise(sid);
+    });
+};
+
+function dial(options, phoneNumber) {
+  return new Promise(function(resolve, reject) {
+    var client = twilio(options.accountSid, options.authToken);
+
+    client
+      .accounts(options.accountSid)
+      .calls.create({
+        to: phoneNumber,
+        from: options.from,
+        url: options.url
+      }, function(error, call) {
+        if (error) {
+          reject(error);
+        }
+
+        resolve(call);
+      });
+  });
+}
 
 module.exports = TwilioServer;
