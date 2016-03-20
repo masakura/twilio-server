@@ -88,17 +88,8 @@ TwilioServer.prototype.receive = function(callback) {
 };
 
 TwilioServer.prototype.dial = function(phoneNumber) {
-  var that = this;
+  var options = this.options_;
 
-  return dial(this.options_, phoneNumber)
-    .then(function(result) {
-      var sid = result.CallSid || result.sid;
-
-      return that.promise(sid);
-    });
-};
-
-function dial(options, phoneNumber) {
   return new Promise(function(resolve, reject) {
     var client = twilio(options.accountSid, options.authToken);
 
@@ -116,6 +107,6 @@ function dial(options, phoneNumber) {
         resolve(call);
       });
   });
-}
+};
 
 module.exports = TwilioServer;
