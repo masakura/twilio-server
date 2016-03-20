@@ -5,3 +5,7 @@
 /.editorconfig
 /.eslintrc*
 /.npmignore
+
+*~
+.#*
+*#
