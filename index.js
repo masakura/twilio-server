@@ -90,7 +90,7 @@ TwilioServer.prototype.receive = function(callback) {
 TwilioServer.prototype.dial = function(phoneNumber) {
   var that = this;
 
-  return dial(this.options, phoneNumber)
+  return dial(this.options_, phoneNumber)
     .then(function(result) {
       var sid = result.CallSid || result.sid;
 

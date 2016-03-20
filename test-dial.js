@@ -2,7 +2,11 @@
 
 var fs = require('fs');
 var TwilioServer = require('./index');
+<<<<<<< HEAD
 var config = JSON.stringify(fs.readFileSync('./config.json', 'utf-8'));
+=======
+var config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+>>>>>>> d4e4e21a9b4cd98e95c1760137846094b8bb6a13
 
 var server = new TwilioServer(config.twilio);
 
@@ -27,4 +31,5 @@ server.dial(config.twilio.to)
       '  <Say>' + text + '</Say>\n' +
       '  <Hangup></Hangup>\n' +
       '</Response>';
-  }));
+  }))
+  .catch(console.log);
